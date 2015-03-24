@@ -89,11 +89,11 @@ public class AddressRepositoryTest {
 	 * Test method for {@link uk.co.blc_services.gumtree.AddressRepository#findOldest()}.
 	 */
 	@Test
-	public void testGetOldest() {
+	public void testfindOldest() {
 		List<Person> people = addressRepo.findOldest();
 		assertNotNull("Should return non null result",people);
 		assertEquals(1, people.size());
-		assertEquals(WES, people.get(1));
+		assertEquals(WES, people.get(0));
 	}
 
 	/**
