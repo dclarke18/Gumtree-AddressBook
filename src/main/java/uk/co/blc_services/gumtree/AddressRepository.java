@@ -22,6 +22,12 @@ public interface AddressRepository {
 	public List<Person> getPeople();
 	
 	/**
+	 * Adds an additional person in to the repository.
+	 * @param p
+	 */
+	public void addPerson(Person p);
+	
+	/**
 	 * Finds people with an exact (case sensitive) match on name and returns them.
 	 * Null will find all entries without a name set.
 	 * If not found will return an empty list.

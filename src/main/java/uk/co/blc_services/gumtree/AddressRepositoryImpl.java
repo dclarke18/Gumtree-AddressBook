@@ -9,14 +9,15 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import uk.co.blc_services.gumtree.domain.Gender;
 import uk.co.blc_services.gumtree.domain.Person;
 
 /**
  * Service class which provides access to the entries in the address book.
- * Non threadsafe implementation which exposes the underlying collection
- * so is open to modification.
+ * Threadsafe implementation which wraps the underlying collection in {@link Collections#unmodifiableList(List)}
+ * so is closed to modification except through the add method.
  * @author dave.clarke@blc-services.co.uk
  *
  */
@@ -25,7 +26,7 @@ public class AddressRepositoryImpl implements AddressRepository {
 	private List<Person> people;
 	
 	public AddressRepositoryImpl(Collection<Person> entries){
-		this.people = new ArrayList<>(entries);
+		this.people = new CopyOnWriteArrayList<>(entries);
 		Collections.sort(this.people);
 	}
 
@@ -34,7 +35,17 @@ public class AddressRepositoryImpl implements AddressRepository {
 	 */
 	@Override
 	public List<Person> getPeople() {
-		return people;
+		return Collections.unmodifiableList(people);
+	}
+	
+
+	/*
+	 * (non-Javadoc)
+	 * @see uk.co.blc_services.gumtree.AddressRepository#addPerson(uk.co.blc_services.gumtree.domain.Person)
+	 */
+	@Override
+	public void addPerson(Person p){
+		people.add(p);
 	}
 
 	/* (non-Javadoc)
