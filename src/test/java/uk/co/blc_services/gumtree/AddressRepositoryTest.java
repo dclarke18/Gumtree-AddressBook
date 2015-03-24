@@ -36,6 +36,8 @@ public class AddressRepositoryTest {
 		for (Person person : people) {
 			assertNotNull("One of the people was null", person);
 		}
+		assertEquals("Bill should be 1st in the list", "Bill McKnight", people.get(0).getName());
+		assertEquals("Wes should be last in the list", "Wes Jackson", people.get(4).getName());
 	}
 
 	/**
