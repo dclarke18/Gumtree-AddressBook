@@ -5,12 +5,16 @@ package uk.co.blc_services.gumtree;
 
 import static org.junit.Assert.*;
 
-import java.util.List;
 import java.time.LocalDate;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.List;
 
+import org.junit.BeforeClass;
 import org.junit.Test;
 
-import uk.co.blc_services.gumtree.domain.*;
+import uk.co.blc_services.gumtree.domain.Gender;
+import uk.co.blc_services.gumtree.domain.Person;
 
 /**
  * Depends on the Test data supplied by Gumtree.
@@ -22,7 +26,13 @@ import uk.co.blc_services.gumtree.domain.*;
  */
 public class AddressRepositoryTest {
 	
-	private AddressRepository addressRepo;
+	private static AddressRepository addressRepo;
+	
+	@BeforeClass
+	public static void setup(){
+		//initialise test data
+		addressRepo = new AddressRepositoryImpl(getTestData());
+	}
 	
 
 	/**
@@ -30,7 +40,7 @@ public class AddressRepositoryTest {
 	 */
 	@Test
 	public void testGetPeople() {
-		List<Person> people = this.addressRepo.getPeople();
+		List<Person> people = addressRepo.getPeople();
 		assertNotNull("Shouldn't get a null list", people);
 		assertEquals("Expected number of people from test data not returned.",5,people.size());
 		for (Person person : people) {
@@ -45,7 +55,8 @@ public class AddressRepositoryTest {
 	 */
 	@Test
 	public void testGetPeopleByName() {
-		List<Person> people = this.addressRepo.findPeopleByName("Paul Robinson");
+		List<Person> people = addressRepo.findPeopleByName("Paul Robinson");
+		assertNotNull("Should return non null list",people);
 		assertEquals(1, people.size());
 		assertEquals(new Person("Paul Robinson", Gender.MALE, LocalDate.parse("1985-01-15")), people.get(0));
 	}
@@ -56,7 +67,7 @@ public class AddressRepositoryTest {
 	 */
 	@Test
 	public void testGetPeopleByNameNoneFound() {
-		List<Person> people = this.addressRepo.findPeopleByName("Nobody Real");
+		List<Person> people = addressRepo.findPeopleByName("Nobody Real");
 		assertNotNull("Should return empty list not null",people);
 		assertEquals(0, people.size());
 	}
@@ -66,7 +77,7 @@ public class AddressRepositoryTest {
 	 */
 	@Test
 	public void testGetPeopleOfGender() {
-		List<Person> people = this.addressRepo.findPeopleByGender(Gender.MALE);
+		List<Person> people = addressRepo.findPeopleByGender(Gender.MALE);
 		assertNotNull("People shouldn't be null",people);
 		assertEquals(3, people.size());
 	}
@@ -76,7 +87,7 @@ public class AddressRepositoryTest {
 	 */
 	@Test
 	public void testGetOldest() {
-		List<Person> people = this.addressRepo.findOldest();
+		List<Person> people = addressRepo.findOldest();
 		assertNotNull("Should return non null result",people);
 		assertEquals(1, people.size());
 		assertEquals(new Person("Wes Jackson", Gender.MALE, LocalDate.parse("1974-08-14")), people.get(1));
@@ -89,5 +100,17 @@ public class AddressRepositoryTest {
 	public void testAgeDifferenceInDays() {
 		fail("Not yet implemented");
 	}
-
+	
+	/**
+	 * Dummy test data. Same as provided by Gumtree but order changed to ensure the repo is
+	 * sorting the data.
+	 * @return
+	 */
+	public static Collection<Person> getTestData(){
+		return Arrays.asList(
+			new Person("Gemma Lane", Gender.FEMALE, LocalDate.parse("1991-11-20")),
+			new Person("Sarah Stone", Gender.FEMALE, LocalDate.parse("1980-09-20")),
+			new Person("Wes Jackson", Gender.MALE, LocalDate.parse("1974-08-14")),
+			new Person("Bill McKnight", Gender.MALE, LocalDate.parse("1977-03-16")));
+	}
 }

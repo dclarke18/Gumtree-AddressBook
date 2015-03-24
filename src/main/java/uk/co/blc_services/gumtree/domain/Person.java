@@ -11,7 +11,7 @@ import java.time.LocalDate;
  * @author dave.clarke@blc-services.co.uk
  *
  */
-public class Person {
+public class Person implements Comparable<Person>{
 	
 	/**
 	 * Constructor for Person instances
@@ -86,6 +86,14 @@ public class Person {
 	@Override
 	public String toString() {
 		return "Person [name=" + name + ", gender=" + gender+ ", dob=" + dob + "]";
+	}
+	@Override
+	public int compareTo(Person o) {
+		if(o == null || o.getName() == null){
+			return -1;
+		} else {
+			return o.getName().compareTo(this.getName());
+		}
 	}
 	
 	
