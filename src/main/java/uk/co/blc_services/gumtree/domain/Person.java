@@ -14,6 +14,20 @@ import java.time.LocalDate;
 public class Person {
 	
 	/**
+	 * Constructor for Person instances
+	 * @param name
+	 * @param gender
+	 * @param dob
+	 */
+	public Person(String name, Gender gender, LocalDate dob) {
+		super();
+		this.name = name;
+		this.gender = gender;
+		this.dob = dob;
+	}
+	
+	
+	/**
 	 * Persons full name including any titles
 	 */
 	private String name;
@@ -27,14 +41,6 @@ public class Person {
 	 * The date on which they were born
 	 */
 	private LocalDate dob;
-	
-	
-	public Person(String name, Gender gender, LocalDate dob) {
-		super();
-		this.name = name;
-		this.gender = gender;
-		this.dob = dob;
-	}
 	
 	public String getName() {
 		return name;

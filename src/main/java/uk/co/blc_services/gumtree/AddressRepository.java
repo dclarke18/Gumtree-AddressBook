@@ -26,7 +26,7 @@ public interface AddressRepository {
 	 * @param name
 	 * @return matching people
 	 */
-	public List<Person> getPeopleByName(String name);
+	public List<Person> findPeopleByName(String name);
 	
 	/**
 	 * Gets all the people with a matching gender.
@@ -35,14 +35,14 @@ public interface AddressRepository {
 	 * @param gender
 	 * @return matching people
 	 */
-	public List<Person> getPeopleOfGender(Gender gender);
+	public List<Person> findPeopleByGender(Gender gender);
 	
 	/**
 	 * Finds the oldest person/people in the repository and returns them.
 	 * If are multiple people in a tie they are all returned.
 	 * @return
 	 */
-	public List<Person> getOldest();
+	public List<Person> findOldest();
 	
 	
 	/**
@@ -55,7 +55,7 @@ public interface AddressRepository {
 	 * @param person b
 	 * @return days between their dob
 	 */
-	public int ageDifferenceInDays(Person a, Person b);
+	public int getAgeDifferenceInDays(Person a, Person b);
 	
 	
 
