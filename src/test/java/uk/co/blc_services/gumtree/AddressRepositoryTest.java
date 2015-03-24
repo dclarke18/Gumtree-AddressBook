@@ -30,7 +30,7 @@ public class AddressRepositoryTest {
 	
 	private static final Person PAUL = new Person("Paul Robinson", Gender.MALE, LocalDate.parse("1985-01-15"));
 	private static final Person WES = new Person("Wes Jackson", Gender.MALE, LocalDate.parse("1974-08-14"));
-	
+	private static final Person BILL = new Person("Bill McKnight", Gender.MALE, LocalDate.parse("1977-03-16"));
 	@BeforeClass
 	public static void setup(){
 		//initialise test data
@@ -97,11 +97,18 @@ public class AddressRepositoryTest {
 	}
 
 	/**
+	 * Very basic test checking that the 2012 leap year has been taken into account.
+	 * This could do with a more complete data driven test but this test will catch
+	 * a common mistake at least.
 	 * Test method for {@link uk.co.blc_services.gumtree.AddressRepository#getAgeDifferenceInDays(uk.co.blc_services.gumtree.domain.Person, uk.co.blc_services.gumtree.domain.Person)}.
 	 */
 	@Test
 	public void testAgeDifferenceInDays() {
-		fail("Not yet implemented");
+		
+		long days = addressRepo.getAgeDifferenceInDays(new Person("jeff", Gender.MALE, LocalDate.parse("2012-01-15")),
+						new Person("fred", Gender.MALE, LocalDate.parse("2013-01-15")));
+		assertEquals(366,days);
+		
 	}
 	
 	/**
@@ -113,8 +120,8 @@ public class AddressRepositoryTest {
 		return Arrays.asList(
 			PAUL,
 			WES,
+			BILL,
 			new Person("Gemma Lane", Gender.FEMALE, LocalDate.parse("1991-11-20")),
-			new Person("Sarah Stone", Gender.FEMALE, LocalDate.parse("1980-09-20")),
-			new Person("Bill McKnight", Gender.MALE, LocalDate.parse("1977-03-16")));
+			new Person("Sarah Stone", Gender.FEMALE, LocalDate.parse("1980-09-20")));
 	}
 }

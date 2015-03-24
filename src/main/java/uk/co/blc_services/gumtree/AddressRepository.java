@@ -57,7 +57,7 @@ public interface AddressRepository {
 	 * @param person b
 	 * @return days between their dob
 	 */
-	public int getAgeDifferenceInDays(Person a, Person b);
+	public long getAgeDifferenceInDays(Person a, Person b);
 	
 	
 
