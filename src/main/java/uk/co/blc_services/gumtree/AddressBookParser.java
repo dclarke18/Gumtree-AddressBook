@@ -43,14 +43,14 @@ public class AddressBookParser {
 			    LocalDate dob = null;
 			    Gender gender = null;
 			    try {
-					dob = LocalDate.parse(dobString, DATE_FORMATTER);
+					dob = LocalDate.parse(dobString.trim(), DATE_FORMATTER);
 				} catch (Exception e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 			    
 			    try {
-					gender = Gender.valueOf(Gender.class, genderString.toUpperCase());
+					gender = Gender.valueOf(Gender.class, genderString.trim().toUpperCase());
 				} catch (Exception e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
