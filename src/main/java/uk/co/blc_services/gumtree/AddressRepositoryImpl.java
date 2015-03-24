@@ -40,8 +40,14 @@ public class AddressRepositoryImpl implements AddressRepository {
 	 */
 	@Override
 	public List<Person> findPeopleByName(String name) {
-		// TODO Auto-generated method stub
-		return null;
+		List<Person> filtered = new ArrayList<>();
+		for (Person person : people) {
+			if((person.getName() == null && name ==null) ||
+			person.getName().equals(name)){
+				filtered.add(person);
+			}
+		}
+		return filtered;
 	}
 
 	/* (non-Javadoc)
