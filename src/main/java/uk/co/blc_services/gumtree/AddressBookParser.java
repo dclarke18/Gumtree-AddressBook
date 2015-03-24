@@ -30,7 +30,7 @@ public class AddressBookParser {
 	/* These are threadsafe unlike SimpleDateFormat used to be */
 	private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("dd/MM/yy");
 	
-	public List<Person> parseInputSource(InputStream is){
+	public List<Person> parse(InputStream is){
 		List<Person> parsedEntries = new ArrayList<>();
 		try (Reader reader = new InputStreamReader(is)){
 			
