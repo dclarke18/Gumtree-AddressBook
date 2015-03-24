@@ -8,8 +8,9 @@ import java.util.List;
 import uk.co.blc_services.gumtree.domain.*;
 
 /**
- * TODO Back this with a set rather than a list?
- * Might want to remove duplicates.
+ * Service interface for accessing the AddressBook Entries.
+ * TODO Should this be named AddressService/AddressBookService?
+ * 
  * @author dave.clarke@blc-services.co.uk
  *
  */

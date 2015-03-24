@@ -15,6 +15,9 @@ import org.junit.Test;
 import uk.co.blc_services.gumtree.domain.Person;
 
 /**
+ * Test harness for parser.
+ * TODO create a set of tests for invalid data
+ * Nulls, unparseable dates, character encoding issues etc.
  * 
  * @author dave.clarke@blc-services.co.uk
  *

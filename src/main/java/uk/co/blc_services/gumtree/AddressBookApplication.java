@@ -8,6 +8,9 @@ import java.io.InputStream;
 import uk.co.blc_services.gumtree.domain.*;
 
 /**
+ * Basic Java Implementation
+ * TODO Refactor to use Spring IOC
+ * TODO take file to parse as an arg
  * @author dave.clarke@blc-services.co.uk
  *
  */
@@ -24,7 +27,8 @@ public class AddressBookApplication {
 	 */
 	public static void main(String[] args) {
 		//create parser
-		InputStream is = ClassLoader.getSystemResourceAsStream(DEFAULT_ADDRESS_FILE);		
+		InputStream is = ClassLoader.getSystemResourceAsStream(DEFAULT_ADDRESS_FILE);
+		
 		AddressBookParser parser = new AddressBookParser();
 		AddressRepository repo = new AddressRepositoryImpl(parser.parse(is));
 		
