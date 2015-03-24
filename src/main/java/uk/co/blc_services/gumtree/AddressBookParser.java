@@ -44,6 +44,11 @@ public class AddressBookParser {
 			    Gender gender = null;
 			    try {
 					dob = LocalDate.parse(dobString.trim(), DATE_FORMATTER);
+					//Java8 doesn't support the joda time pivot year concept.
+					//check that this date isn't in the future if it is deduct 100 years
+					if(LocalDate.now().isBefore(dob) ){
+						dob = dob.minusYears(100);
+					}
 				} catch (Exception e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
