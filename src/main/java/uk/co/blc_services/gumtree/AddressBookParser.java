@@ -14,6 +14,8 @@ import java.util.List;
 
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVRecord;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import uk.co.blc_services.gumtree.domain.*;
 
@@ -27,6 +29,8 @@ import uk.co.blc_services.gumtree.domain.*;
  */
 public class AddressBookParser {
 	
+	private static final Logger LOG = LoggerFactory.getLogger(AddressBookParser.class);
+	
 	/* These are threadsafe unlike SimpleDateFormat used to be */
 	private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("dd/MM/yy");
 	
@@ -34,35 +38,37 @@ public class AddressBookParser {
 		List<Person> parsedEntries = new ArrayList<>();
 		try (Reader reader = new InputStreamReader(is)){
 			
-			Iterable<CSVRecord> records = CSVFormat.DEFAULT.parse(reader);
 			
+			Iterable<CSVRecord> records = CSVFormat.DEFAULT.parse(reader);
+			LOG.info("Parsed records from CSV reader");
 			for (CSVRecord record : records) {
 			    String name = record.get(0);
 			    String genderString = record.get(1);
 			    String dobString = record.get(2);
+			    LOG.debug("Parsed entry '{}', '{}', '{}'", name, genderString, dobString);
 			    LocalDate dob = null;
 			    Gender gender = null;
 			    try {
 					dob = LocalDate.parse(dobString.trim(), DATE_FORMATTER);
-					//Java8 doesn't support the joda time pivot year concept.
+					//Java8 doesn't support the joda time pivot year concept (yet?).
 					//check that this date isn't in the future if it is deduct 100 years
+					//TODO - Get the users to accept an unambigous yyyy date format!!
 					if(LocalDate.now().isBefore(dob) ){
 						dob = dob.minusYears(100);
 					}
+					LOG.debug("Converted {} into {}", dobString, dob);
 				} catch (Exception e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+					LOG.warn("Failed to parse "+dobString+" using "+DATE_FORMATTER, e);
 				}
 			    
 			    try {
 					gender = Gender.valueOf(Gender.class, genderString.trim().toUpperCase());
 				} catch (Exception e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+					LOG.warn("Failed to parse "+genderString+" into a gender, gender for "+name+ " will be set to null",e);
 				}
-			    		
-			    parsedEntries.add(new Person(name, gender , dob));
-			    
+			    Person p = new Person(name, gender , dob);
+			    parsedEntries.add(p);
+			    LOG.debug("Added : {}\n total parsed = {}", p, parsedEntries.size());
 			}
 			return parsedEntries;
 			
