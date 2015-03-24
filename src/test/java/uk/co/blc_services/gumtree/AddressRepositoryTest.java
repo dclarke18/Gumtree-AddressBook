@@ -28,6 +28,9 @@ public class AddressRepositoryTest {
 	
 	private static AddressRepository addressRepo;
 	
+	private static final Person PAUL = new Person("Paul Robinson", Gender.MALE, LocalDate.parse("1985-01-15"));
+	private static final Person WES = new Person("Wes Jackson", Gender.MALE, LocalDate.parse("1974-08-14"));
+	
 	@BeforeClass
 	public static void setup(){
 		//initialise test data
@@ -58,7 +61,7 @@ public class AddressRepositoryTest {
 		List<Person> people = addressRepo.findPeopleByName("Paul Robinson");
 		assertNotNull("Should return non null list",people);
 		assertEquals(1, people.size());
-		assertEquals(new Person("Paul Robinson", Gender.MALE, LocalDate.parse("1985-01-15")), people.get(0));
+		assertEquals(PAUL, people.get(0));
 	}
 	
 	/**
@@ -90,7 +93,7 @@ public class AddressRepositoryTest {
 		List<Person> people = addressRepo.findOldest();
 		assertNotNull("Should return non null result",people);
 		assertEquals(1, people.size());
-		assertEquals(new Person("Wes Jackson", Gender.MALE, LocalDate.parse("1974-08-14")), people.get(1));
+		assertEquals(WES, people.get(1));
 	}
 
 	/**
@@ -108,9 +111,10 @@ public class AddressRepositoryTest {
 	 */
 	public static Collection<Person> getTestData(){
 		return Arrays.asList(
+			PAUL,
+			WES,
 			new Person("Gemma Lane", Gender.FEMALE, LocalDate.parse("1991-11-20")),
 			new Person("Sarah Stone", Gender.FEMALE, LocalDate.parse("1980-09-20")),
-			new Person("Wes Jackson", Gender.MALE, LocalDate.parse("1974-08-14")),
 			new Person("Bill McKnight", Gender.MALE, LocalDate.parse("1977-03-16")));
 	}
 }

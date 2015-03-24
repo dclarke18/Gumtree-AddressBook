@@ -8,6 +8,7 @@ import java.time.LocalDate;
 /**
  * Represents an individual and some basic details
  * about them.
+ * Immutable instances so inherently threadsafe.
  * @author dave.clarke@blc-services.co.uk
  *
  */
@@ -92,7 +93,7 @@ public class Person implements Comparable<Person>{
 		if(o == null || o.getName() == null){
 			return -1;
 		} else {
-			return o.getName().compareTo(this.getName());
+			return this.getName().compareTo(o.getName());
 		}
 	}
 	

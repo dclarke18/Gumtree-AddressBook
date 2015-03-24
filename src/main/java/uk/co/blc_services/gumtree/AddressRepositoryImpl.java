@@ -13,6 +13,8 @@ import uk.co.blc_services.gumtree.domain.Person;
 
 /**
  * Service class which provides access to the entries in the address book.
+ * Non threadsafe implementation which exposes the underlying collection
+ * so is open to modification.
  * @author dave.clarke@blc-services.co.uk
  *
  */
@@ -30,8 +32,7 @@ public class AddressRepositoryImpl implements AddressRepository {
 	 */
 	@Override
 	public List<Person> getPeople() {
-		// TODO Auto-generated method stub
-		return null;
+		return people;
 	}
 
 	/* (non-Javadoc)
