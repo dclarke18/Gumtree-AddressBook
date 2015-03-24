@@ -5,6 +5,7 @@ package uk.co.blc_services.gumtree.domain;
 
 import java.time.LocalDate;
 
+
 /**
  * Represents an individual and some basic details
  * about them.
@@ -25,6 +26,13 @@ public class Person implements Comparable<Person>{
 		this.name = name;
 		this.gender = gender;
 		this.dob = dob;
+		validate(this);
+	}
+	
+	public static void validate(Person p){
+		if(p == null || p.getName() == null || p.getName().isEmpty()){
+			throw new IllegalArgumentException("Invalid person instance - must have a non null name");
+		}
 	}
 	
 	
