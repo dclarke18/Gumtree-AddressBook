@@ -49,8 +49,14 @@ public class AddressRepositoryImpl implements AddressRepository {
 	 */
 	@Override
 	public List<Person> findPeopleByGender(Gender gender) {
-		// TODO Auto-generated method stub
-		return null;
+		List<Person> filtered = new ArrayList<>();
+		for (Person person : people) {
+			if((person.getGender() == null && gender ==null) ||
+			person.getGender().equals(gender)){
+				filtered.add(person);
+			}
+		}
+		return filtered;
 	}
 
 	/* (non-Javadoc)
