@@ -6,7 +6,6 @@ package uk.co.blc_services.gumtree;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.Reader;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -36,11 +35,11 @@ public class AddressBookParser {
 	
 	public List<Person> parse(InputStream is){
 		List<Person> parsedEntries = new ArrayList<>();
-		try (Reader reader = new InputStreamReader(is)){
+		try (InputStreamReader reader = new InputStreamReader(is)){
 			
-			
+			LOG.debug("Attempting to parse stream using default encoding '{}'", reader.getEncoding());
 			Iterable<CSVRecord> records = CSVFormat.DEFAULT.parse(reader);
-			LOG.info("Parsed records from CSV reader");
+			LOG.info("Parsed records from CSV reader using encoding {}", reader.getEncoding());
 			for (CSVRecord record : records) {
 			    String name = record.get(0);
 			    String genderString = record.get(1);

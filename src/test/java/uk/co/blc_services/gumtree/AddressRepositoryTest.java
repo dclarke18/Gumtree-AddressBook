@@ -21,6 +21,13 @@ import uk.co.blc_services.gumtree.domain.Person;
  * Test will need to be made more rigorous (or other cases created)
  * to test other scenarios.
  * 
+ * TODO - Create other files of test data including:
+ * Null values for each/all fields
+ * Duplicate items in address book (is this okay?? Or should they be filtered out?)
+ * Multiple entries with the same name (but other details differ)
+ * Multiple people with the same oldest DOB
+ * 
+ * 
  * @author dave.clarke@blc-services.co.uk
  *
  */
@@ -114,6 +121,7 @@ public class AddressRepositoryTest {
 	/**
 	 * Dummy test data. Same as provided by Gumtree but order changed to ensure the repo is
 	 * sorting the data.
+	 * TODO Now we have a parser refactor this into a test file.
 	 * @return
 	 */
 	public static Collection<Person> getTestData(){
