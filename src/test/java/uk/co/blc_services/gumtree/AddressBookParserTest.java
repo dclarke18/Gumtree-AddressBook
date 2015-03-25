@@ -23,6 +23,7 @@ import uk.co.blc_services.gumtree.domain.Person;
  * TODO Add wondows and unix line ending tests
  * Nulls, unparseable dates, character encoding issues etc.
  * TODO Multithreaded test of the parser
+ * TODO refactor into data driven parameterised test?
  * 
  * @author dave.clarke@blc-services.co.uk
  *
@@ -55,14 +56,13 @@ public class AddressBookParserTest {
 		List<Person> parsed = this.parser.parse(ClassLoader.getSystemResourceAsStream(TEST_UNPARSE_ENTRIES_FILE_NAME));
 		assertEquals("Wrong number of entries", 2, parsed.size());
 		assertTrue("Parsed data doesn't match expectation \nExpected:\n"+AddressRepositoryTest.getTestData()+" but got :\n"+parsed,
-				parsed.equals(getTestDuplicatesExpectedResult()));
+				parsed.equals(getTestUnparseableEntriesExpectedResult()));
 		
 	}
 	
 	/**
 	 * Expected test data matching the input file.
-	 * TODO inline the data and use a ByteArrayInput Stream?
-	 * @return
+	 * @return expected entries
 	 */
 	public static Collection<Person> getTestDuplicatesExpectedResult(){
 		
@@ -73,6 +73,17 @@ public class AddressBookParserTest {
 			new Person("Paul Robinson", Gender.MALE, LocalDate.parse("1985-01-15")),
 			new Person("Gemma Lane", Gender.FEMALE, LocalDate.parse("1991-11-20")),
 			sarah,wes, wes, wes, sarah);
+	}
+	
+	/**
+	 * Expected test data matching the input file.
+	 * @return expected entries
+	 */
+	public static Collection<Person> getTestUnparseableEntriesExpectedResult(){
+		
+		return Arrays.asList(
+			new Person("Bill McKnight", Gender.MALE, VALID_DATE),
+			new Person("Sarah Stone", Gender.FEMALE, LocalDate.parse("1980-09-20")));
 	}
 	
 	

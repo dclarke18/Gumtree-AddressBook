@@ -44,7 +44,7 @@ public class AddressBookParser {
 			    String name = record.get(0);
 			    String genderString = record.get(1);
 			    String dobString = record.get(2);
-			    LOG.debug("Parsed entry '{}', '{}', '{}'", name, genderString, dobString);
+			    LOG.debug("Parsed entry '{}', '{}', '{}' from {}", name, genderString, dobString, record);
 			    LocalDate dob = null;
 			    Gender gender = null;
 			    try {
@@ -65,9 +65,16 @@ public class AddressBookParser {
 				} catch (Exception e) {
 					LOG.warn("Failed to parse "+genderString+" into a gender, gender for "+name+ " will be set to null",e);
 				}
-			    Person p = new Person(name, gender , dob);
-			    parsedEntries.add(p);
-			    LOG.debug("Added : {}\n total parsed = {}", p, parsedEntries.size());
+			    Person p;
+				try {
+					p = new Person(name, gender , dob);
+				    parsedEntries.add(p);
+				    LOG.debug("Added : {}\n total parsed = {}", p, parsedEntries.size());
+				} catch (Exception e) {
+					LOG.error("Couldn't create a valid person from {} will skip this entry and continue.", record);
+				}
+
+
 			}
 			return parsedEntries;
 			

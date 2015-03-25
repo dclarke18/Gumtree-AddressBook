@@ -20,6 +20,7 @@ public class Person implements Comparable<Person>{
 	 * @param name
 	 * @param gender
 	 * @param dob
+	 * @throws IllegalArgumentException if the instance doesn't pass the {@link #validate(Person)} validation
 	 */
 	public Person(String name, Gender gender, LocalDate dob) {
 		super();
@@ -29,8 +30,15 @@ public class Person implements Comparable<Person>{
 		validate(this);
 	}
 	
+	
+	/**
+	 * Checks the person has a non null non empty name.
+	 * TODO Add Guava dependency for StringUtils
+	 * TODO Refactor validation logic out of the bean - perhaps hibernate validator?
+	 * @param p
+	 */
 	public static void validate(Person p){
-		if(p == null || p.getName() == null || p.getName().isEmpty()){
+		if(p == null || p.getName() == null || p.getName().trim().isEmpty()){
 			throw new IllegalArgumentException("Invalid person instance - must have a non null name");
 		}
 	}
