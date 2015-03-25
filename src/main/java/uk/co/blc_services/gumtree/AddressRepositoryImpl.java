@@ -22,9 +22,15 @@ import uk.co.blc_services.gumtree.domain.Person;
 
 /**
  * Service class which provides access to the entries in the address book.
- * Threadsafe implementation which wraps the underlying collection in {@link Collections#unmodifiableList(List)}
+ * Removes duplicates from the added entries and sorts by natural order as
+ * per {@link Person#compareTo(Person)}.
+ * 
+ * Threadsafe implementation which wraps and returned Lists in {@link Collections#unmodifiableList(List)}
  * so is closed to modification except through the add method.
- * TODO Use cases are uncertain - could probably do with multiple implementations and a base class.
+ * 
+ * TODO Use cases are uncertain - could probably do with multiple implementations with different threadsafety & collections implmentations
+ * all extending a base class. Eg. CopyOnWriteArrayList for 'directory' read often write rarely cases.
+ * 
  * 
  * @author dave.clarke@blc-services.co.uk
  *
