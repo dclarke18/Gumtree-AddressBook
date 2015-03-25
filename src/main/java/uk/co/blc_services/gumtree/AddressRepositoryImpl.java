@@ -104,16 +104,6 @@ public class AddressRepositoryImpl implements AddressRepository {
 		return ageSortedPeople;
 	}
 
-	/* (non-Javadoc)
-	 * @see uk.co.blc_services.gumtree.AddressRepository#getAgeDifferenceInDays(uk.co.blc_services.gumtree.domain.Person, uk.co.blc_services.gumtree.domain.Person)
-	 */
-	@Override
-	public long getAgeDifferenceInDays(Person a, Person b) {
-		if(a == null || a.getDob() == null || b == null || b.getDob() == null){
-			throw new IllegalArgumentException("Can't give the difference between "+a+" and "+b);
-		}
-		return ChronoUnit.DAYS.between(a.getDob(), b.getDob());
-	}
 	
 	static class PersonAgeComparator implements Comparator<Person>{
 		

@@ -54,18 +54,5 @@ public interface AddressRepository {
 	public List<Person> findOldest();
 	
 	
-	/**
-	 * Calculates the difference in age between 2 people and returns this in days.
-	 * Always a positive number or zero if there is no difference.
-	 * 
-	 * TODO This method doesn't really belong in this interface. Find a  better place
-	 * 
-	 * @param person a
-	 * @param person b
-	 * @return days between their dob
-	 */
-	public long getAgeDifferenceInDays(Person a, Person b);
-	
-	
 
 }

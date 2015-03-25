@@ -4,6 +4,7 @@
 package uk.co.blc_services.gumtree.domain;
 
 import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 
 
 /**
@@ -67,6 +68,21 @@ public class Person implements Comparable<Person>{
 	}
 	public LocalDate getDob() {
 		return dob;
+	}
+	
+	/**
+	 * Calculates the difference in age between this and another person.
+	 * Always a positive number or zero if there is no difference.
+	 * If the toCompare person or this has no DOB will return null.
+	 * 
+	 * @param person a
+	 * @return days between their dob
+	 */
+	public Long getAgeDifferenceInDays(Person toCompare) {
+		if(this.getDob() == null || toCompare == null || toCompare.getDob() == null){
+			return null;
+		}
+		return Math.abs(ChronoUnit.DAYS.between(this.getDob(), toCompare.getDob()));
 	}
 
 	@Override
