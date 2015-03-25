@@ -22,14 +22,15 @@ import uk.co.blc_services.gumtree.domain.Person;
  * Test harness for parser.
  * TODO Add wondows and unix line ending tests
  * Nulls, unparseable dates, character encoding issues etc.
+ * TODO Multithreaded test of the parser
  * 
  * @author dave.clarke@blc-services.co.uk
  *
  */
 public class AddressBookParserTest {
 	
-	public static final String TEST_FILE_NAME = "AddressBookParserTest-testDuplicates.csv";
-	public static final int TEST_FILE_NO_OF_PARSABLE_ENTRIES = 8;
+	public static final String TEST_DUPLICATES_FILE_NAME = "AddressBookParserTest-testDuplicates.csv";
+	public static final String TEST_UNPARSE_ENTRIES_FILE_NAME = "AddressBookParserTest-testUnparseableEntries.csv";
 	
 	private static final LocalDate VALID_DATE = LocalDate.parse("1977-03-16");
 	
@@ -42,8 +43,17 @@ public class AddressBookParserTest {
 
 	@Test
 	public void testDuplicatesFile() {
-		List<Person> parsed = this.parser.parse(ClassLoader.getSystemResourceAsStream(TEST_FILE_NAME));
-		assertEquals("Wrong number of entries", TEST_FILE_NO_OF_PARSABLE_ENTRIES, parsed.size());
+		List<Person> parsed = this.parser.parse(ClassLoader.getSystemResourceAsStream(TEST_DUPLICATES_FILE_NAME));
+		assertEquals("Wrong number of entries", 8, parsed.size());
+		assertTrue("Parsed data doesn't match expectation \nExpected:\n"+AddressRepositoryTest.getTestData()+" but got :\n"+parsed,
+				parsed.equals(getTestDuplicatesExpectedResult()));
+		
+	}
+	
+	@Test
+	public void testUnparseableEntriesFile() {
+		List<Person> parsed = this.parser.parse(ClassLoader.getSystemResourceAsStream(TEST_UNPARSE_ENTRIES_FILE_NAME));
+		assertEquals("Wrong number of entries", 2, parsed.size());
 		assertTrue("Parsed data doesn't match expectation \nExpected:\n"+AddressRepositoryTest.getTestData()+" but got :\n"+parsed,
 				parsed.equals(getTestDuplicatesExpectedResult()));
 		
