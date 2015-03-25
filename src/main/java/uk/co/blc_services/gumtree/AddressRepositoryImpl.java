@@ -10,7 +10,10 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.SortedSet;
+import java.util.concurrent.ConcurrentSkipListSet;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -21,16 +24,17 @@ import uk.co.blc_services.gumtree.domain.Person;
  * Service class which provides access to the entries in the address book.
  * Threadsafe implementation which wraps the underlying collection in {@link Collections#unmodifiableList(List)}
  * so is closed to modification except through the add method.
+ * TODO Use cases are uncertain - could probably do with multiple implementations and a base class.
+ * 
  * @author dave.clarke@blc-services.co.uk
  *
  */
 public class AddressRepositoryImpl implements AddressRepository {
 	
-	private List<Person> people;
+	private SortedSet<Person> people;
 	
 	public AddressRepositoryImpl(Collection<Person> entries){
-		this.people = new CopyOnWriteArrayList<>(entries);
-		Collections.sort(this.people);
+		this.people = new ConcurrentSkipListSet<>(entries);
 	}
 
 	/* (non-Javadoc)
@@ -38,7 +42,9 @@ public class AddressRepositoryImpl implements AddressRepository {
 	 */
 	@Override
 	public List<Person> getPeople() {
-		return Collections.unmodifiableList(people);
+		//Duplicating the collection is painful.. if we need the underlying
+		//to be protected and threadsafe we could cache this List. Or consider changing the interface.
+		return Collections.unmodifiableList(new ArrayList<>(people));
 	}
 	
 
@@ -58,7 +64,8 @@ public class AddressRepositoryImpl implements AddressRepository {
 	public List<Person> findPeopleByName(String name) {
 		List<Person> matchingPeople = this.people.stream()
 				.filter(p-> p.getName().equals(name)).collect(Collectors.toList());
-		return matchingPeople;
+		
+		return Collections.unmodifiableList(matchingPeople);
 	}
 
 	/* (non-Javadoc)
@@ -70,7 +77,7 @@ public class AddressRepositoryImpl implements AddressRepository {
 				.filter(p-> (p.getGender() == null && gender ==null) ||
 			p.getGender().equals(gender)).collect(Collectors.toList());
 		
-		return filtered;
+		return Collections.unmodifiableList(filtered);
 	}
 
 	/* (non-Javadoc)
@@ -92,7 +99,7 @@ public class AddressRepositoryImpl implements AddressRepository {
 				.filter(p-> p.getDob() != null && p.getDob().equals(filterDOB))
 				.collect(Collectors.toList());
 		
-		return oldestPeople;
+		return Collections.unmodifiableList(oldestPeople);
 	}
 	
 	public List<Person> getPeopleSortedByAgeAscending(){
