@@ -3,20 +3,18 @@
  */
 package uk.co.blc_services.gumtree.parsing;
 
+import static org.testng.AssertJUnit.assertEquals;
+import static org.testng.AssertJUnit.assertNotNull;
+
 import java.io.ByteArrayInputStream;
-import java.io.InputStream;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
-import org.testng.annotations.BeforeClass;
-import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
 
-import static org.testng.AssertJUnit.*;
 import uk.co.blc_services.gumtree.domain.Gender;
 import uk.co.blc_services.gumtree.domain.Person;
-import uk.co.blc_services.gumtree.parsing.CommonsCSVAddressBookParser;
 
 /**
  * Note this uses TestNG rather than JUnit thanks to it's
@@ -24,9 +22,9 @@ import uk.co.blc_services.gumtree.parsing.CommonsCSVAddressBookParser;
  * @author dave.clarke@blc-services.co.uk
  *
  */
-public class AddressBookParserConcurrencyTest {
+public abstract class AddressBookParserConcurrencyTest {
 	
-	public static final int NO_OF_ENTRIES = 500;
+	public static final int NO_OF_ENTRIES = 10_000;
 	public static final String NAME_PREFIX = "Parser Test Entry : ";
 	public static final String FIELD_SEPERATOR = ", ";
 	public static final LocalDate DOB_START_POINT = LocalDate.ofEpochDay(0);// 1st Jan 1970
@@ -50,28 +48,13 @@ public class AddressBookParserConcurrencyTest {
 		testFileContents = sb.toString();
 	}
 	
-	private static CommonsCSVAddressBookParser parser;
+	protected abstract AddressBookParser getParser();
 	
-	private InputStream is;
 
-	/**
-	 * @throws java.lang.Exception
-	 */
-	@BeforeClass
-	public static void setUpClass() throws Exception {
-		parser = new CommonsCSVAddressBookParser();
-		//TODO Suppress log4j or it could get quite noisy!
-	}
-	
-	@BeforeTest
-	public void setUp(){
-		is = new ByteArrayInputStream(testFileContents.getBytes());
-		//System.out.println("Test File = "+testFileContents);
-	}
-
-	@Test(threadPoolSize = 2, invocationCount = 2, timeOut = 10_000, enabled=false)
+	@Test(threadPoolSize = 5, invocationCount = 2, timeOut = 10_000)
 	public void testParse() {
-		List<Person> parsed = parser.parse(is);
+
+		List<Person> parsed = getParser().parse(new ByteArrayInputStream(testFileContents.getBytes()));
 		assertNotNull(parsed);
 		assertEquals(NO_OF_ENTRIES, parsed.size());
 		//TODO should we block until all threads complete before start to check the List?

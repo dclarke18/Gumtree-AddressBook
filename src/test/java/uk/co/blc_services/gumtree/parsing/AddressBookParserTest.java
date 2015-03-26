@@ -3,7 +3,10 @@
  */
 package uk.co.blc_services.gumtree.parsing;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
@@ -12,14 +15,11 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
-import org.junit.Before;
 import org.junit.Test;
 
 import uk.co.blc_services.gumtree.AddressRepositoryTest;
 import uk.co.blc_services.gumtree.domain.Gender;
 import uk.co.blc_services.gumtree.domain.Person;
-import uk.co.blc_services.gumtree.parsing.AddressBookParser;
-import uk.co.blc_services.gumtree.parsing.CommonsCSVAddressBookParser;
 
 /**
  * Test harness for parser.

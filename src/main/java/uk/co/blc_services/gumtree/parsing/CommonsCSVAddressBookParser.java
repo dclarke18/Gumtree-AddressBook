@@ -3,11 +3,11 @@
  */
 package uk.co.blc_services.gumtree.parsing;
 
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
+import java.nio.charset.Charset;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -16,15 +16,13 @@ import org.apache.commons.csv.CSVRecord;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import uk.co.blc_services.gumtree.domain.Gender;
 import uk.co.blc_services.gumtree.domain.Person;
 
 /**
  * Parses CSV file in the format Name, Gender, DOB.
  * DOB is in the format dd/MM/yy
- * Uses Apache Commons CSV which is not threadsafe.
- * TODO Raise bug with Commons CSV about the code or if not their documentation as it's not clear
- * that the parser isn't threadsafe. See github issue #5.
+ * Uses Apache Commons CSV.
+ * Threadsafe.
  * 
  * @author dave.clarke@blc-services.co.uk
  *
@@ -35,11 +33,11 @@ public class CommonsCSVAddressBookParser implements AddressBookParser {
 	
 	public List<Person> parse(InputStream is){
 		List<Person> parsedEntries = new LinkedList<>();
-		try (InputStreamReader reader = new InputStreamReader(is)){
+		try (BufferedReader reader = new BufferedReader(new InputStreamReader(is))){
 			
-			LOG.debug("Attempting to parse stream using default encoding '{}'", reader.getEncoding());
+			LOG.debug("Attempting to parse stream using default encoding '{}'", Charset.defaultCharset());
 			Iterable<CSVRecord> records = CSVFormat.DEFAULT.parse(reader);
-			LOG.info("Parsed records from CSV reader using encoding {}", reader.getEncoding());
+			LOG.info("Parsed records from CSV reader using encoding {}", Charset.defaultCharset());
 			for (CSVRecord record : records) {
 			    String name = record.get(0);
 			    String gender = record.get(1);

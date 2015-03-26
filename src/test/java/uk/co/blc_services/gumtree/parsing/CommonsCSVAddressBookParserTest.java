@@ -1,12 +1,11 @@
 /*
  * Copyright BLC IT Services Ltd 2015
  */
-package uk.co.blc_services.gumtree;
+package uk.co.blc_services.gumtree.parsing;
 
 import org.junit.BeforeClass;
 
 import uk.co.blc_services.gumtree.parsing.AddressBookParser;
-import uk.co.blc_services.gumtree.parsing.AddressBookParserTest;
 import uk.co.blc_services.gumtree.parsing.CommonsCSVAddressBookParser;
 
 /**
