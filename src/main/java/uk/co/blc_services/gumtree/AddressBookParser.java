@@ -80,7 +80,7 @@ public class AddressBookParser {
 			return parsedEntries;
 			
 		} catch (IOException e) {
-			throw new RuntimeException(e);
+			throw new RuntimeException("Failed while attempting to parse input", e);
 		}
 	}
 
