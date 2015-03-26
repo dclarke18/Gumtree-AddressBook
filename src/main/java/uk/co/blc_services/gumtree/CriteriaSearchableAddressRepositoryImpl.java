@@ -4,6 +4,7 @@
 package uk.co.blc_services.gumtree;
 
 import java.util.Collection;
+import java.util.LinkedList;
 import java.util.List;
 
 import uk.co.blc_services.gumtree.domain.Person;
@@ -24,9 +25,14 @@ public class CriteriaSearchableAddressRepositoryImpl extends
 	 * @see uk.co.blc_services.gumtree.CriteriaSearchableAddressRepository#findMatching(uk.co.blc_services.gumtree.CriteriaSearchableAddressRepository.PersonCriteria)
 	 */
 	@Override
-	public List<Person> findMatching(PersonCriteria crteria) {
-		// TODO Auto-generated method stub
-		return null;
+	public List<Person> findMatching(PersonCriteria criteria) {
+		LinkedList<Person> matches = new LinkedList<>();
+		for (Person p : getPeople()) {
+			if(criteria.matches(p)){
+				matches.add(p);
+			}
+		}
+		return matches;
 	}
 
 }

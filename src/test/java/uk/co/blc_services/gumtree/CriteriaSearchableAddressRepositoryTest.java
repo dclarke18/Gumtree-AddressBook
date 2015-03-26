@@ -3,8 +3,7 @@
  */
 package uk.co.blc_services.gumtree;
 
-import static org.junit.Assert.*;
-import static uk.co.blc_services.gumtree.CriteriaSearchableAddressRepository.*;
+import static org.junit.Assert.assertEquals;
 
 import java.util.Collections;
 import java.util.List;
@@ -12,6 +11,7 @@ import java.util.List;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import uk.co.blc_services.gumtree.CriteriaSearchableAddressRepository.PersonCriteria;
 import uk.co.blc_services.gumtree.domain.Gender;
 import uk.co.blc_services.gumtree.domain.Person;
 
@@ -66,6 +66,5 @@ public class CriteriaSearchableAddressRepositoryTest {
 		//expected result in other tests.
 		assertEquals(getRepo().findPeopleByGender(Gender.MALE), matching);
 	}
-	
 
 }
