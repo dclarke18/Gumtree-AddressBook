@@ -9,6 +9,7 @@ import java.io.InputStreamReader;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 import org.apache.commons.csv.CSVFormat;
@@ -34,7 +35,7 @@ public class AddressBookParser {
 	private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("dd/MM/yy");
 	
 	public List<Person> parse(InputStream is){
-		List<Person> parsedEntries = new ArrayList<>();
+		List<Person> parsedEntries = new LinkedList<>();
 		try (InputStreamReader reader = new InputStreamReader(is)){
 			
 			LOG.debug("Attempting to parse stream using default encoding '{}'", reader.getEncoding());
