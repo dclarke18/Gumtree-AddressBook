@@ -17,6 +17,7 @@ import org.junit.Test;
 
 import uk.co.blc_services.gumtree.domain.Gender;
 import uk.co.blc_services.gumtree.domain.Person;
+import uk.co.blc_services.gumtree.parsing.CommonsCSVAddressBookParser;
 
 /**
  * Test harness for parser.
@@ -35,11 +36,11 @@ public class AddressBookParserTest {
 	
 	private static final LocalDate VALID_DATE = LocalDate.parse("1977-03-16");
 	
-	private AddressBookParser parser;
+	private CommonsCSVAddressBookParser parser;
 	
 	@Before
 	public void setup(){
-		this.parser = new AddressBookParser();
+		this.parser = new CommonsCSVAddressBookParser();
 	}
 
 	@Test

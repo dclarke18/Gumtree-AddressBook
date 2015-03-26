@@ -1,7 +1,7 @@
 /*
  * Copyright BLC IT Services Ltd 2015
  */
-package uk.co.blc_services.gumtree;
+package uk.co.blc_services.gumtree.parsing;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -22,14 +22,14 @@ import uk.co.blc_services.gumtree.domain.Person;
 /**
  * Parses CSV file in the format Name, Gender, DOB.
  * DOB is in the format dd/MM/yy
- * Uses Apache Commons CSV.
- * TODO Add logging
+ * Uses Apache Commons CSV which is not threadsafe.
+ * 
  * @author dave.clarke@blc-services.co.uk
  *
  */
-public class AddressBookParser {
+public class CommonsCSVAddressBookParser implements AddressBookParser {
 	
-	private static final Logger LOG = LoggerFactory.getLogger(AddressBookParser.class);
+	private static final Logger LOG = LoggerFactory.getLogger(CommonsCSVAddressBookParser.class);
 	
 	/* These are threadsafe unlike SimpleDateFormat used to be */
 	private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("dd/MM/yy");

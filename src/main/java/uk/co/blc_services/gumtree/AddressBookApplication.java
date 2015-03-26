@@ -6,6 +6,7 @@ package uk.co.blc_services.gumtree;
 import java.io.InputStream;
 
 import uk.co.blc_services.gumtree.domain.*;
+import uk.co.blc_services.gumtree.parsing.CommonsCSVAddressBookParser;
 
 /**
  * Basic Java Implementation
@@ -29,7 +30,7 @@ public class AddressBookApplication {
 		//create parser
 		InputStream is = ClassLoader.getSystemResourceAsStream(DEFAULT_ADDRESS_FILE);
 		
-		AddressBookParser parser = new AddressBookParser();
+		CommonsCSVAddressBookParser parser = new CommonsCSVAddressBookParser();
 		AddressRepository repo = new AddressRepositoryImpl(parser.parse(is));
 		
 		System.out.println("Welcome to the Gumtree Address book - "+getVersion());
