@@ -5,15 +5,19 @@ package uk.co.blc_services.gumtree;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 
 import org.junit.Test;
 
+import uk.co.blc_services.gumtree.AddressRepository.PersonCriteria;
 import uk.co.blc_services.gumtree.domain.Gender;
 import uk.co.blc_services.gumtree.domain.Person;
 
@@ -100,9 +104,61 @@ public abstract class AddressRepositoryTest {
 	public void testFindOldest() {
 		List<Person> people = this.getRepo().findOldest();
 		assertNotNull("Should return non null result",people);
-		assertEquals(2, people.size());
+		assertEquals("Found "+people,2, people.size());
 		assertTrue(people.containsAll(Arrays.asList(OLD_FRED, YOUNG_JOHN)));
 	}
+	
+	@Test
+	public void testSortByAgeAscending(){
+		List<Person> people = this.getRepo().getPeopleSortedByAgeAscending();
+		assertNotNull("Should return non null result",people);
+		assertEquals("Found incorrect number", new HashSet<>(getTestData()).size(), people.size());
+		assertNull("1st person should have null dob", people.get(0).getDob());
+		assertEquals("Last people should be as old as the oldest", OLD_FRED.getDob(), people.get(people.size()-1).getDob());
+		assertEquals("Last people should be as old as the oldest", OLD_FRED.getDob(), people.get(people.size()-2).getDob());
+	}
+	
+	@Test
+	public void testSortByAgeDescending(){
+		List<Person> people = this.getRepo().getPeopleSortedByAgeDecending();
+		assertNotNull("Should return non null result",people);
+		assertEquals("Found incorrect number", new HashSet<>(getTestData()).size(), people.size());
+		assertEquals("1st person should be as old as the oldest", OLD_FRED.getDob(), people.get(0).getDob());
+		assertEquals("2ndst person should be as old as the oldest", OLD_FRED.getDob(), people.get(1).getDob());
+	}
+	
+	@Test
+	public void testFindByCriteriaAll() {
+		List<Person> matching = getRepo().findMatching(new PersonCriteria(){
+			public boolean test(Person p){
+				return true;
+			}
+		});
+		assertEquals(getRepo().getPeople(), matching);
+	}
+	
+	@Test
+	public void testFindByCriteriaNone() {
+		List<Person> matching = getRepo().findMatching(new PersonCriteria(){
+			public boolean test(Person p){
+				return false;
+			}
+		});
+		assertEquals(Collections.EMPTY_LIST, matching);
+	}
+	
+	@Test
+	public void testFindByCriteriaGender() {
+		List<Person> matching = getRepo().findMatching(new PersonCriteria(){
+			public boolean test(Person p){
+				return p.getGender().equals(Gender.MALE);
+			}
+		});
+		//This relies on the findPeopleByGender() having already been unit tested against the
+		//expected result in other tests.
+		assertEquals(getRepo().findPeopleByGender(Gender.MALE), matching);
+	}
+	
 	
 	/**
 	 * Dummy test data. Same as provided by Gumtree but order changed to ensure the repo is
@@ -119,7 +175,7 @@ public abstract class AddressRepositoryTest {
 					//John and 'Old Fred' are twins born 10 mins apart
 			new Person("Gemma Lane", Gender.FEMALE, LocalDate.parse("1991-11-20")),
 			new Person("Gemma Lane", Gender.FEMALE, LocalDate.parse("1991-11-20")),//different identity but equal
-			new Person("Sarah Stone", Gender.FEMALE, LocalDate.parse("1980-09-20")),
+			new Person("Sarah Stone", Gender.FEMALE, null),
 			OLD_FRED);
 	}
 }

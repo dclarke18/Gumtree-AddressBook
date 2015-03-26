@@ -6,7 +6,7 @@ package uk.co.blc_services.gumtree.domain;
 import java.util.Comparator;
 
 /**
- * Compares people by their age.
+ * Compares people by their age ascending (nulls 1st followed by youngest -> oldest)
  * 
  * @author dave.clarke@blc-services.co.uk
  *
@@ -32,13 +32,13 @@ public class PersonAgeComparator implements Comparator<Person> {
 		} else {
 			if (o1 == null || o1.getDob() == null) {
 				// only o1 is null
-				return 1;
+				return -1;
 			} else if (o2 == null || o2.getDob() == null) {
 				// only o2 is null
-				return -1;
+				return 1;
 			}
 		}
-		return o1.getDob().compareTo(o2.getDob());
+		return Math.negateExact(o1.getDob().compareTo(o2.getDob()));
 	}
 
 }

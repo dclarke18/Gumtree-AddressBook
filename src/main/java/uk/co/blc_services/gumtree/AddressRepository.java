@@ -3,9 +3,15 @@
  */
 package uk.co.blc_services.gumtree;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
-import uk.co.blc_services.gumtree.domain.*;
+import uk.co.blc_services.gumtree.domain.Gender;
+import uk.co.blc_services.gumtree.domain.Person;
+import uk.co.blc_services.gumtree.domain.PersonAgeComparator;
 
 /**
  * Service interface for accessing the AddressBook Entries.
@@ -52,6 +58,36 @@ public interface AddressRepository {
 	 * @return
 	 */
 	public List<Person> findOldest();
+	
+	/**
+	 * 	TODO Inefficient implementation... throws away the sorted collection
+	 * @return
+	 */
+	public default List<Person> getPeopleSortedByAgeAscending(){
+		
+		List<Person> ageSortedPeople = new ArrayList<>(getPeople());
+		Collections.sort(ageSortedPeople, PersonAgeComparator.getInstance());
+		return ageSortedPeople;
+	}
+	
+	/**
+	 * 	TODO Inefficient implementation... throws away the sorted collection Override and cache?
+	 * @return
+	 */
+	public default List<Person> getPeopleSortedByAgeDecending(){
+		
+		List<Person> ageSortedPeople = new ArrayList<>(getPeople());
+		Collections.sort(ageSortedPeople, PersonAgeComparator.getInstance().reversed());
+		return ageSortedPeople;
+	}
+	
+	public default List<Person> findMatching(PersonCriteria criteria){
+		return getPeople().stream().filter(criteria).collect(Collectors.toList());	
+	}
+	
+	static interface PersonCriteria extends Predicate<Person>{
+	}
+	
 	
 	
 

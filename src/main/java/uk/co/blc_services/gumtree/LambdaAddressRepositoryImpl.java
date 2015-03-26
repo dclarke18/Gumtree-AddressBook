@@ -31,11 +31,11 @@ import uk.co.blc_services.gumtree.domain.PersonAgeComparator;
  * @author dave.clarke@blc-services.co.uk
  *
  */
-public class AddressRepositoryImpl implements AddressRepository {
+public class LambdaAddressRepositoryImpl implements AddressRepository {
 	
 	private SortedSet<Person> people;
 	
-	public AddressRepositoryImpl(Collection<Person> entries){
+	public LambdaAddressRepositoryImpl(Collection<Person> entries){
 		this.people = new ConcurrentSkipListSet<>(entries);
 	}
 
@@ -88,13 +88,10 @@ public class AddressRepositoryImpl implements AddressRepository {
 	@Override
 	public List<Person> findOldest() {
 		
-		LocalDate oldestDOB = LocalDate.now();
-		//TODO can we do this bit all in one iteration through the collection?
-		//Is there a cheaper way?
-		for (Person person : this.people) {
-			if(person.getDob() != null && oldestDOB.isAfter(person.getDob())){
-				oldestDOB = person.getDob();
-			}
+		LocalDate oldestDOB = this.people.stream()
+								.min(PersonAgeComparator.getInstance()).map(Person :: getDob).orElse(null);
+		if(oldestDOB == null){
+			return Collections.emptyList();
 		}
 		final LocalDate filterDOB = oldestDOB;
 		List<Person> oldestPeople = this.people.stream()
@@ -104,13 +101,5 @@ public class AddressRepositoryImpl implements AddressRepository {
 		return Collections.unmodifiableList(oldestPeople);
 	}
 	
-	public List<Person> getPeopleSortedByAgeAscending(){
-		//TODO Inefficent implementation... throws away the sorting
-		//improve once threadsafe
-		
-		List<Person> ageSortedPeople = new ArrayList<>(this.people);
-		Collections.sort(ageSortedPeople, PersonAgeComparator.getInstance());
-		return ageSortedPeople;
-	}
 
 }

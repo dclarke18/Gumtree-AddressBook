@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>uk.co.blc-services</groupId>
 	<artifactId>Gumtree-AddressBook</artifactId>
-	<version>0.0.5-SNAPSHOT</version>
+	<version>0.0.5</version>
 	<name>AddressBook</name>
 	<description>Sample project for interview purposes.</description>
 

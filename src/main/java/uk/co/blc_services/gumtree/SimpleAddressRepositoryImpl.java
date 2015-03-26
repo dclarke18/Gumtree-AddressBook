@@ -77,8 +77,7 @@ public class SimpleAddressRepositoryImpl implements AddressRepository {
 	 */
 	@Override
 	public List<Person> findOldest() {
-		//TODO refactor to not use sort! Can be done with cheaper 1 pass iteration
-		List<Person> ageSortedPeople = getPeopleSortedByAgeAscending();
+		List<Person> ageSortedPeople = getPeopleSortedByAgeDecending();
 		List<Person> oldestPeople = new LinkedList<>();
 		for (Person person : ageSortedPeople) {
 			if(person.getDob() == null){
@@ -94,15 +93,6 @@ public class SimpleAddressRepositoryImpl implements AddressRepository {
 			}
 		}
 		return oldestPeople;
-	}
-	
-	public List<Person> getPeopleSortedByAgeAscending(){
-		//TODO Inefficent implementation... throws away the sorting
-		//improve once threadsafe
-		
-		List<Person> ageSortedPeople = new ArrayList<>(this.people);
-		Collections.sort(ageSortedPeople, PersonAgeComparator.getInstance());
-		return ageSortedPeople;
 	}
 
 	@Override

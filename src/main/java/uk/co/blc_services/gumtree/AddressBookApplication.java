@@ -31,7 +31,7 @@ public class AddressBookApplication {
 		InputStream is = ClassLoader.getSystemResourceAsStream(DEFAULT_ADDRESS_FILE);
 		
 		CommonsCSVAddressBookParser parser = new CommonsCSVAddressBookParser();
-		AddressRepository repo = new AddressRepositoryImpl(parser.parse(is));
+		AddressRepository repo = new LambdaAddressRepositoryImpl(parser.parse(is));
 		
 		System.out.println("Welcome to the Gumtree Address book - "+getVersion());
 		System.out.println("Entries parsed sucessfully:\n"+repo.getPeople());
