@@ -23,6 +23,8 @@ import uk.co.blc_services.gumtree.domain.Person;
  * Parses CSV file in the format Name, Gender, DOB.
  * DOB is in the format dd/MM/yy
  * Uses Apache Commons CSV which is not threadsafe.
+ * TODO Raise bug with Commons CSV about the code or if not their documentation as it's not clear
+ * that the parser isn't threadsafe. See github issue #5.
  * 
  * @author dave.clarke@blc-services.co.uk
  *
@@ -30,9 +32,6 @@ import uk.co.blc_services.gumtree.domain.Person;
 public class CommonsCSVAddressBookParser implements AddressBookParser {
 	
 	private static final Logger LOG = LoggerFactory.getLogger(CommonsCSVAddressBookParser.class);
-	
-	/* These are threadsafe unlike SimpleDateFormat used to be */
-	private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("dd/MM/yy");
 	
 	public List<Person> parse(InputStream is){
 		List<Person> parsedEntries = new LinkedList<>();
@@ -43,39 +42,16 @@ public class CommonsCSVAddressBookParser implements AddressBookParser {
 			LOG.info("Parsed records from CSV reader using encoding {}", reader.getEncoding());
 			for (CSVRecord record : records) {
 			    String name = record.get(0);
-			    String genderString = record.get(1);
-			    String dobString = record.get(2);
-			    LOG.debug("Parsed entry '{}', '{}', '{}' from {}", name, genderString, dobString, record);
-			    LocalDate dob = null;
-			    Gender gender = null;
-			    try {
-					dob = LocalDate.parse(dobString.trim(), DATE_FORMATTER);
-					//Java8 doesn't support the joda time pivot year concept (yet?).
-					//check that this date isn't in the future if it is deduct 100 years
-					//TODO - Get the users to accept an unambigous yyyy date format!!
-					if(LocalDate.now().isBefore(dob) ){
-						dob = dob.minusYears(100);
-					}
-					LOG.debug("Converted {} into {}", dobString, dob);
-				} catch (Exception e) {
-					LOG.warn("Failed to parse "+dobString+" using "+DATE_FORMATTER, e);
-				}
+			    String gender = record.get(1);
+			    String dob = record.get(2);
+			    LOG.debug("Parsed entry '{}', '{}', '{}' from {}", name, gender, dob, record);
 			    
-			    try {
-					gender = Gender.valueOf(Gender.class, genderString.trim().toUpperCase());
-				} catch (Exception e) {
-					LOG.warn("Failed to parse "+genderString+" into a gender, gender for "+name+ " will be set to null",e);
-				}
-			    Person p;
-				try {
-					p = new Person(name, gender , dob);
-				    parsedEntries.add(p);
-				    LOG.debug("Added : {}\n total parsed = {}", p, parsedEntries.size());
-				} catch (Exception e) {
-					LOG.error("Couldn't create a valid person from {} will skip this entry and continue.", record);
-				}
-
-
+			    Person p = fromStrings(name, gender, dob);
+			    if(p != null){
+			    	parsedEntries.add(p);
+			    } else {
+			    	LOG.error("Couldn't create a valid person from '{}', '{}', '{}' will return continue with next record.", name, gender, dob);
+			    }
 			}
 			return parsedEntries;
 			

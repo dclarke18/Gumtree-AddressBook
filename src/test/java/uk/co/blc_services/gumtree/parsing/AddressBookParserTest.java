@@ -1,7 +1,7 @@
 /*
  * Copyright BLC IT Services Ltd 2015
  */
-package uk.co.blc_services.gumtree;
+package uk.co.blc_services.gumtree.parsing;
 
 import static org.junit.Assert.*;
 
@@ -15,37 +15,38 @@ import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
 
+import uk.co.blc_services.gumtree.AddressRepositoryTest;
 import uk.co.blc_services.gumtree.domain.Gender;
 import uk.co.blc_services.gumtree.domain.Person;
+import uk.co.blc_services.gumtree.parsing.AddressBookParser;
 import uk.co.blc_services.gumtree.parsing.CommonsCSVAddressBookParser;
 
 /**
  * Test harness for parser.
- * TODO Add wondows and unix line ending tests
+ * TODO Add windows and unix line ending tests
  * Nulls, unparseable dates, character encoding issues etc.
- * TODO Multithreaded test of the parser
  * TODO refactor into data driven parameterised test?
  * 
  * @author dave.clarke@blc-services.co.uk
  *
  */
-public class AddressBookParserTest {
+public abstract class AddressBookParserTest {
 	
 	public static final String TEST_DUPLICATES_FILE_NAME = "AddressBookParserTest-testDuplicates.csv";
 	public static final String TEST_UNPARSE_ENTRIES_FILE_NAME = "AddressBookParserTest-testUnparseableEntries.csv";
 	
 	private static final LocalDate VALID_DATE = LocalDate.parse("1977-03-16");
 	
-	private CommonsCSVAddressBookParser parser;
+	/**
+	 * @return fully initialised implementation to test
+	 * repeat calls should return the same instance.
+	 */
+	abstract protected AddressBookParser getParser();
 	
-	@Before
-	public void setup(){
-		this.parser = new CommonsCSVAddressBookParser();
-	}
-
+	
 	@Test
 	public void testDuplicatesFile() {
-		List<Person> parsed = this.parser.parse(ClassLoader.getSystemResourceAsStream(TEST_DUPLICATES_FILE_NAME));
+		List<Person> parsed = getParser().parse(ClassLoader.getSystemResourceAsStream(TEST_DUPLICATES_FILE_NAME));
 		assertEquals("Wrong number of entries", 8, parsed.size());
 		assertTrue("Parsed data doesn't match expectation \nExpected:\n"+AddressRepositoryTest.getTestData()+" but got :\n"+parsed,
 				parsed.equals(getTestDuplicatesExpectedResult()));
@@ -54,7 +55,7 @@ public class AddressBookParserTest {
 	
 	@Test
 	public void testUnparseableEntriesFile() {
-		List<Person> parsed = this.parser.parse(ClassLoader.getSystemResourceAsStream(TEST_UNPARSE_ENTRIES_FILE_NAME));
+		List<Person> parsed = getParser().parse(ClassLoader.getSystemResourceAsStream(TEST_UNPARSE_ENTRIES_FILE_NAME));
 		assertEquals("Wrong number of entries", 2, parsed.size());
 		assertTrue("Parsed data doesn't match expectation \nExpected:\n"+AddressRepositoryTest.getTestData()+" but got :\n"+parsed,
 				parsed.equals(getTestUnparseableEntriesExpectedResult()));
@@ -91,7 +92,7 @@ public class AddressBookParserTest {
 	//*  NAMES */
 	@Test
 	public void testApostrophe(){
-		List<Person> parsed = this.parser.parse(getStream("Fred O'Connor, Male, 16/03/77"));
+		List<Person> parsed = getParser().parse(getStream("Fred O'Connor, Male, 16/03/77"));
 		assertNotNull(parsed);
 		assertEquals("Incorrect number of people returned", 1, parsed.size());
 		assertEquals("Unxepected parsing of person","Fred O'Connor", parsed.get(0).getName());
@@ -99,7 +100,7 @@ public class AddressBookParserTest {
 	
 	@Test
 	public void testComma(){
-		List<Person> parsed = this.parser.parse(getStream("\"Mary Ramsgate, Jnr.\", Female, 16/03/77"));
+		List<Person> parsed = getParser().parse(getStream("\"Mary Ramsgate, Jnr.\", Female, 16/03/77"));
 		assertNotNull(parsed);
 		assertEquals("Incorrect number of people returned", 1, parsed.size());
 		assertEquals("Unxepected parsing of person", new Person("Mary Ramsgate, Jnr.", Gender.FEMALE, VALID_DATE), parsed.get(0));
@@ -110,7 +111,7 @@ public class AddressBookParserTest {
 	
 	@Test
 	public void testYoungPersonDOBParse(){
-		List<Person> parsed = this.parser.parse(getStream("Young Person, Female, 05/05/05"));
+		List<Person> parsed = getParser().parse(getStream("Young Person, Female, 05/05/05"));
 		assertNotNull(parsed);
 		assertEquals("Incorrect number of people returned", 1, parsed.size());
 		assertEquals("Unxepected parsing of person", LocalDate.parse("2005-05-05"),
@@ -119,7 +120,7 @@ public class AddressBookParserTest {
 	
 	@Test
 	public void testNoDOB(){
-		List<Person> parsed = this.parser.parse(getStream("Jeff NoBirthday, Male,"));
+		List<Person> parsed = getParser().parse(getStream("Jeff NoBirthday, Male,"));
 		assertNotNull(parsed);
 		assertEquals("Incorrect number of people returned", 1, parsed.size());
 		assertNull("Unxepected parsing of person", parsed.get(0).getDob());
@@ -127,7 +128,7 @@ public class AddressBookParserTest {
 	
 	@Test
 	public void testBornAsLeapingOn29th(){
-		List<Person> parsed = this.parser.parse(getStream("Lizzie Leaping, Female, 29/02/12"));
+		List<Person> parsed = getParser().parse(getStream("Lizzie Leaping, Female, 29/02/12"));
 		assertNotNull(parsed);
 		assertEquals("Incorrect number of people returned", 1, parsed.size());
 		assertEquals("Unxepected parsing of person", LocalDate.parse("2012-02-29"),
@@ -137,7 +138,7 @@ public class AddressBookParserTest {
 
 	@Test
 	public void testNotBornOn29thNotLeapYear(){
-		List<Person> parsed = this.parser.parse(getStream("Mark NotLeaping, Male, 29/02/11"));
+		List<Person> parsed = getParser().parse(getStream("Mark NotLeaping, Male, 29/02/11"));
 		assertNotNull(parsed);
 		assertEquals("Incorrect number of people returned", 1, parsed.size());
 //		assertNull("Unxepected parsing of person", parsed.get(0).getDob());
@@ -154,7 +155,7 @@ public class AddressBookParserTest {
 
 	@Test
 	public void testUnparseableDate1DigitMonth(){
-		List<Person> parsed = this.parser.parse(getStream("Unparseable Date, Male, 16/3/77"));
+		List<Person> parsed = getParser().parse(getStream("Unparseable Date, Male, 16/3/77"));
 		assertNotNull(parsed);
 		assertEquals("Incorrect number of people returned", 1, parsed.size());
 		assertNull("Unxepected parsing of person", parsed.get(0).getDob());
@@ -162,7 +163,7 @@ public class AddressBookParserTest {
 	
 	@Test
 	public void testUnparseableDate1DigitDay(){
-		List<Person> parsed = this.parser.parse(getStream("Unparseable Date, Male, 16/3/77"));
+		List<Person> parsed = getParser().parse(getStream("Unparseable Date, Male, 16/3/77"));
 		assertNotNull(parsed);
 		assertEquals("Incorrect number of people returned", 1, parsed.size());
 		assertNull("Unxepected parsing of person", parsed.get(0).getDob());
@@ -170,7 +171,7 @@ public class AddressBookParserTest {
 	
 	@Test
 	public void testUnparseableDate1DigitYear(){
-		List<Person> parsed = this.parser.parse(getStream("Unparseable Date, Male, 16/03/7"));
+		List<Person> parsed = getParser().parse(getStream("Unparseable Date, Male, 16/03/7"));
 		assertNotNull(parsed);
 		assertEquals("Incorrect number of people returned", 1, parsed.size());
 		assertNull("Unxepected parsing of person", parsed.get(0).getDob());
@@ -178,7 +179,7 @@ public class AddressBookParserTest {
 	
 	@Test
 	public void testUnparseableDateInvalidMonth(){
-		List<Person> parsed = this.parser.parse(getStream("Unparseable Date, Male, 16/13/77"));
+		List<Person> parsed = getParser().parse(getStream("Unparseable Date, Male, 16/13/77"));
 		assertNotNull(parsed);
 		assertEquals("Incorrect number of people returned", 1, parsed.size());
 		assertNull("Unxepected parsing of person", parsed.get(0).getDob());
@@ -186,7 +187,7 @@ public class AddressBookParserTest {
 	
 	@Test
 	public void testUnparseableDate4DigitYear(){
-		List<Person> parsed = this.parser.parse(getStream("Unparseable Date, Male, 16/13/1977"));
+		List<Person> parsed = getParser().parse(getStream("Unparseable Date, Male, 16/13/1977"));
 		assertNotNull(parsed);
 		assertEquals("Incorrect number of people returned", 1, parsed.size());
 		assertNull("Unxepected parsing of person", parsed.get(0).getDob());
@@ -196,7 +197,7 @@ public class AddressBookParserTest {
 	
 	@Test
 	public void testNoGender(){
-		List<Person> parsed = this.parser.parse(getStream("Mary NoGender,, 16/03/77"));
+		List<Person> parsed = getParser().parse(getStream("Mary NoGender,, 16/03/77"));
 		assertNotNull(parsed);
 		assertEquals("Incorrect number of people returned", 1, parsed.size());
 		assertNull("Unxepected parsing of person", parsed.get(0).getGender());
@@ -204,7 +205,7 @@ public class AddressBookParserTest {
 	
 	@Test
 	public void testGenderLowerCase(){
-		List<Person> parsed = this.parser.parse(getStream("Gordon Gender, male, 16/03/77"));
+		List<Person> parsed = getParser().parse(getStream("Gordon Gender, male, 16/03/77"));
 		assertNotNull(parsed);
 		assertEquals("Incorrect number of people returned", 1, parsed.size());
 		assertEquals("Unxepected parsing of person", Gender.MALE, parsed.get(0).getGender());
@@ -212,7 +213,7 @@ public class AddressBookParserTest {
 	
 	@Test
 	public void testGenderUpperCase(){
-		List<Person> parsed = this.parser.parse(getStream("Gordon Gender, MALE, 16/03/77"));
+		List<Person> parsed = getParser().parse(getStream("Gordon Gender, MALE, 16/03/77"));
 		assertNotNull(parsed);
 		assertEquals("Incorrect number of people returned", 1, parsed.size());
 		assertEquals("Unxepected parsing of person", Gender.MALE, parsed.get(0).getGender());
@@ -220,7 +221,7 @@ public class AddressBookParserTest {
 	
 	@Test
 	public void testGenderMixedCase(){
-		List<Person> parsed = this.parser.parse(getStream("Gordon Gender, MaLe, 16/03/77"));
+		List<Person> parsed = getParser().parse(getStream("Gordon Gender, MaLe, 16/03/77"));
 		assertNotNull(parsed);
 		assertEquals("Incorrect number of people returned", 1, parsed.size());
 		assertEquals("Unxepected parsing of person", Gender.MALE, parsed.get(0).getGender());
@@ -228,7 +229,7 @@ public class AddressBookParserTest {
 	
 	@Test
 	public void testUnparseableGender(){
-		List<Person> parsed = this.parser.parse(getStream("Gordon Gender, Nothing, 16/03/77"));
+		List<Person> parsed = getParser().parse(getStream("Gordon Gender, Nothing, 16/03/77"));
 		assertNotNull(parsed);
 		assertEquals("Incorrect number of people returned", 1, parsed.size());
 		assertNull("Unxepected parsing of person", parsed.get(0).getGender());
@@ -237,7 +238,7 @@ public class AddressBookParserTest {
 	/* MISSING DATA */
 	@Test
 	public void testJustName(){
-		List<Person> parsed = this.parser.parse(getStream("Only Name,,"));
+		List<Person> parsed = getParser().parse(getStream("Only Name,,"));
 		assertNotNull(parsed);
 		assertEquals("Incorrect number of people returned", 1, parsed.size());
 		assertEquals("Unxepected parsing of person", new Person("Only Name", null, null), parsed.get(0));
@@ -245,7 +246,7 @@ public class AddressBookParserTest {
 	
 	@Test
 	public void testJustNameAndSpaces(){
-		List<Person> parsed = this.parser.parse(getStream("NameButRestSpaces,        ,       "));
+		List<Person> parsed = getParser().parse(getStream("NameButRestSpaces,        ,       "));
 		assertNotNull(parsed);
 		assertEquals("Incorrect number of people returned", 1, parsed.size());
 		assertEquals("Unxepected parsing of person", new Person("NameButRestSpaces", null, null), parsed.get(0));
