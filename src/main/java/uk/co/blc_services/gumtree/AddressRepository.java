@@ -82,7 +82,7 @@ public interface AddressRepository {
 	}
 	
 	public default List<Person> findMatching(PersonCriteria criteria){
-		return getPeople().stream().filter(criteria).collect(Collectors.toList());	
+		return Collections.unmodifiableList(getPeople().stream().filter(criteria).collect(Collectors.toList()));	
 	}
 	
 	static interface PersonCriteria extends Predicate<Person>{

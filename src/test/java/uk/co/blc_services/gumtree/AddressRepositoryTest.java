@@ -42,6 +42,8 @@ public abstract class AddressRepositoryTest {
 	private static final Person BILL = new Person("Bill McKnight", Gender.MALE, LocalDate.parse("1977-03-16"));
 	private static final Person YOUNG_JOHN = new Person("Young John Smith", Gender.MALE, LocalDate.parse("1945-09-20"));
 	private static final Person OLD_FRED = new Person("Old Fred Smith", Gender.MALE, LocalDate.parse("1945-09-20"));
+	private static final Person BOBBY = new Person("Bobby Smith", null, null);
+	private static final int TEST_DATA_UNIQUE_ENTRIES = 8;
 	
 	
 	/**
@@ -57,7 +59,7 @@ public abstract class AddressRepositoryTest {
 	public void testGetPeople() {
 		List<Person> people = this.getRepo().getPeople();
 		assertNotNull("Shouldn't get a null list", people);
-		assertEquals("Expected number of people from test data not returned.",7,people.size());
+		assertEquals("Expected number of people from test data not returned.",TEST_DATA_UNIQUE_ENTRIES,people.size());
 		for (Person person : people) {
 			assertNotNull("One of the people was null", person);
 		}
@@ -151,12 +153,21 @@ public abstract class AddressRepositoryTest {
 	public void testFindByCriteriaGender() {
 		List<Person> matching = getRepo().findMatching(new PersonCriteria(){
 			public boolean test(Person p){
-				return p.getGender().equals(Gender.MALE);
+				return Gender.MALE.equals(p.getGender());
 			}
 		});
 		//This relies on the findPeopleByGender() having already been unit tested against the
 		//expected result in other tests.
-		assertEquals(getRepo().findPeopleByGender(Gender.MALE), matching);
+		List<Person> expected = getRepo().findPeopleByGender(Gender.MALE);
+		assertTrue(matching.containsAll(expected));
+		assertEquals(matching.size() , expected.size());
+	}
+	
+	@Test
+	public void testFindByGenderNull() {
+		List<Person> matching = getRepo().findPeopleByGender(null);
+		assertEquals(matching.size() , 1);
+		assertEquals(BOBBY, matching.get(0));
 	}
 	
 	
@@ -174,6 +185,7 @@ public abstract class AddressRepositoryTest {
 			YOUNG_JOHN,
 					//John and 'Old Fred' are twins born 10 mins apart
 			new Person("Gemma Lane", Gender.FEMALE, LocalDate.parse("1991-11-20")),
+			BOBBY,
 			new Person("Gemma Lane", Gender.FEMALE, LocalDate.parse("1991-11-20")),//different identity but equal
 			new Person("Sarah Stone", Gender.FEMALE, null),
 			OLD_FRED);

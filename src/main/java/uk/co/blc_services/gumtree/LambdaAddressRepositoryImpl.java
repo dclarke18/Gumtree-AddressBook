@@ -8,9 +8,9 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.SortedSet;
 import java.util.concurrent.ConcurrentSkipListSet;
-import java.util.stream.Collectors;
 
 import uk.co.blc_services.gumtree.domain.Gender;
 import uk.co.blc_services.gumtree.domain.Person;
@@ -64,10 +64,7 @@ public class LambdaAddressRepositoryImpl implements AddressRepository {
 	 */
 	@Override
 	public List<Person> findPeopleByName(String name) {
-		List<Person> matchingPeople = this.people.stream()
-				.filter(p-> p.getName().equals(name)).collect(Collectors.toList());
-		
-		return Collections.unmodifiableList(matchingPeople);
+		return findMatching(p-> p.getName().equals(name));
 	}
 
 	/* (non-Javadoc)
@@ -75,11 +72,8 @@ public class LambdaAddressRepositoryImpl implements AddressRepository {
 	 */
 	@Override
 	public List<Person> findPeopleByGender(Gender gender) {
-		List<Person> filtered = this.people.stream()
-				.filter(p-> (p.getGender() == null && gender ==null) ||
-			p.getGender().equals(gender)).collect(Collectors.toList());
-		
-		return Collections.unmodifiableList(filtered);
+		Optional<Gender> optGender = Optional.ofNullable(gender);
+		return findMatching(p-> Optional.ofNullable(p.getGender()).equals(optGender));
 	}
 
 	/* (non-Javadoc)
@@ -89,16 +83,11 @@ public class LambdaAddressRepositoryImpl implements AddressRepository {
 	public List<Person> findOldest() {
 		
 		LocalDate oldestDOB = this.people.stream()
-								.min(PersonAgeComparator.getInstance()).map(Person :: getDob).orElse(null);
+								.max(PersonAgeComparator.getInstance()).map(Person :: getDob).orElse(null);
 		if(oldestDOB == null){
 			return Collections.emptyList();
 		}
-		final LocalDate filterDOB = oldestDOB;
-		List<Person> oldestPeople = this.people.stream()
-				.filter(p-> p.getDob() != null && p.getDob().equals(filterDOB))
-				.collect(Collectors.toList());
-		
-		return Collections.unmodifiableList(oldestPeople);
+		return findMatching(p-> oldestDOB.equals(p.getDob()));
 	}
 	
 
