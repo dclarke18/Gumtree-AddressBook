@@ -8,7 +8,6 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -17,7 +16,8 @@ import org.apache.commons.csv.CSVRecord;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import uk.co.blc_services.gumtree.domain.*;
+import uk.co.blc_services.gumtree.domain.Gender;
+import uk.co.blc_services.gumtree.domain.Person;
 
 /**
  * Parses CSV file in the format Name, Gender, DOB.
