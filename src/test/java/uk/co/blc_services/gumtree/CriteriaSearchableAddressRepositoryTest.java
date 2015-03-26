@@ -28,7 +28,7 @@ public class CriteriaSearchableAddressRepositoryTest {
 	@BeforeClass
 	public static void setup(){
 		//initialise test data
-		addressRepo = new CriteriaSearchableAddressRepositoryImpl(AddressRepositoryTest.getTestData());
+		addressRepo = new CriteriaSearchableAddressRepositoryImpl(new AddressRepositoryImpl(AddressRepositoryTest.getTestData()));
 	}
 	
 	protected CriteriaSearchableAddressRepository getRepo(){
