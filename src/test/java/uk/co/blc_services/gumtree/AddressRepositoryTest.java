@@ -39,6 +39,7 @@ public class AddressRepositoryTest {
 	private static final Person BILL = new Person("Bill McKnight", Gender.MALE, LocalDate.parse("1977-03-16"));
 	private static final Person YOUNG_JOHN = new Person("Young John Smith", Gender.MALE, LocalDate.parse("1945-09-20"));
 	private static final Person OLD_FRED = new Person("Old Fred Smith", Gender.MALE, LocalDate.parse("1945-09-20"));
+	
 	@BeforeClass
 	public static void setup(){
 		//initialise test data
