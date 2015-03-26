@@ -7,7 +7,6 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 import java.util.SortedSet;
 import java.util.concurrent.ConcurrentSkipListSet;
@@ -15,6 +14,7 @@ import java.util.stream.Collectors;
 
 import uk.co.blc_services.gumtree.domain.Gender;
 import uk.co.blc_services.gumtree.domain.Person;
+import uk.co.blc_services.gumtree.domain.PersonAgeComparator;
 
 /**
  * Service class which provides access to the entries in the address book.
@@ -111,39 +111,6 @@ public class AddressRepositoryImpl implements AddressRepository {
 		List<Person> ageSortedPeople = new ArrayList<>(this.people);
 		Collections.sort(ageSortedPeople, PersonAgeComparator.getInstance());
 		return ageSortedPeople;
-	}
-
-	
-	static class PersonAgeComparator implements Comparator<Person>{
-		
-		private PersonAgeComparator() {
-			super();
-		}
-		
-		
-		public static final PersonAgeComparator INST = new PersonAgeComparator();
-		
-		public static PersonAgeComparator getInstance(){
-			return INST;
-		}
-
-		@Override
-		public int compare(Person o1, Person o2) {
-			if((o1 == null || o1.getDob() == null) && (o2 == null || o2.getDob() == null)){
-				//both null dobs or null objects
-				return 0;
-			} else {
-				if(o1 == null || o1.getDob() == null){
-					//only o1 is null 
-					return 1;
-				} else if(o2 == null || o2.getDob() == null){
-					//only o2 is null
-					return -1;
-				}
-			}
-			return o1.getDob().compareTo(o2.getDob());
-		}
-
 	}
 
 }
