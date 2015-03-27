@@ -1,7 +1,12 @@
 package uk.co.blc_services.gumtree.domain;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.time.LocalDate;
 
 import org.junit.Ignore;
@@ -44,6 +49,27 @@ public class PersonTest {
 	@Ignore
 	public void testValidator(){
 		//TODO Implement this test
+	}
+	
+	/**
+	 * TODO Consider using a serialisation util or find/write an assertSerialisable()
+	 * surely commons lang or guava will have this done right?
+	 * @throws Exception
+	 */
+	@Test
+	public void testSerialization() throws Exception{
+		Person p = new Person("fred", Gender.MALE, LocalDate.now());
+		ByteArrayOutputStream baos = new ByteArrayOutputStream();
+		ObjectOutputStream oos = new ObjectOutputStream(baos);
+		oos.writeObject(p);
+		//Object has been serialised
+		oos.close();
+		ObjectInputStream ois = new ObjectInputStream( new ByteArrayInputStream(baos.toByteArray()));
+		Person pCopy = (Person) ois.readObject();
+		assertEquals(p, pCopy);
+		assertEquals(p.getClass(), pCopy.getClass());
+		//object has been deserialized and is valid
+		
 	}
 
 }

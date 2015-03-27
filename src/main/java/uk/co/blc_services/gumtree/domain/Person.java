@@ -3,6 +3,7 @@
  */
 package uk.co.blc_services.gumtree.domain;
 
+import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 
@@ -14,8 +15,10 @@ import java.time.temporal.ChronoUnit;
  * @author dave.clarke@blc-services.co.uk
  *
  */
-public class Person implements Comparable<Person>{
+public class Person implements Comparable<Person>, Serializable{
 	
+	private static final long serialVersionUID = 8123848616276231743L;
+
 	/**
 	 * Constructor for Person instances
 	 * @param name
