@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
+<suite name="Suite" verbose="1">
+	<test name="Junit Tests" junit="true">
+		<packages>
+			<package name="uk.co.blc_services.gumtree.domain" />
+		</packages>
+		<classes>
+			<class name="uk.co.blc_services.gumtree.LambdaAddressRepositoryImplTest" />
+			<class name="uk.co.blc_services.gumtree.SimpleAddressRepositoryImplTest" />
+			
+			<class name="uk.co.blc_services.gumtree.parsing.CommonsCSVAddressBookParserTest" />
+			<class name="uk.co.blc_services.gumtree.parsing.OpenCSVAddressBookParserTest" />
+		</classes>
+	</test>
+	<test name="TestNG Tests" junit="false">
+		<packages>
+			<package name="uk.co.blc_services.gumtree.parsing" />
+		</packages>
+	</test>
+</suite>
